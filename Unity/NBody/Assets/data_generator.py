@@ -29,12 +29,15 @@ def generate(lower_bound:float, upper_bound:float, sample_size:int, precision=5,
     while (sample_size > 0):
         for column in data:
             randfloat = round(random.uniform(lower_bound, upper_bound), precision)
+            if column == "velocityX" or column == "velocityY" or column == "velocityZ":
+                randfloat = randfloat / 10000
+
             if column == "mass":
-                randfloat = abs(randfloat)
+                randfloat = 10 * abs(randfloat)
             data[column].append(randfloat)
         sample_size -= 1
 
     df = pd.DataFrame(data)
     df.to_csv(filename, index=False)
 
-generate(-50, 50, 1000)
+generate(-5, 5, 15)

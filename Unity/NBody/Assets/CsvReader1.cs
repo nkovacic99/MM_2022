@@ -8,14 +8,14 @@ using System.Globalization;
 public class CsvReader1 : MonoBehaviour
 {
     public TextAsset textAssetData;
-    public float dt = 0.00001f;
+    public float dt = 0.0000000000001f;
 
     private GameObject[] lightBodies;
     private GameObject heavyBody;
 
     private int numberOfCsvColumns = 7;
 
-    double G = 1;
+    double G = 0.00001f;
 
     // forces[i,j] is the force that the i-th body experiences from the j-th
     private Vector3[,] forces;
@@ -88,7 +88,7 @@ public class CsvReader1 : MonoBehaviour
 
 
             
-            double mass = double.Parse(data[numberOfCsvColumns * (i+1) + 6]);
+            double mass = double.Parse(data[numberOfCsvColumns * (i+1) + 6], CultureInfo.InvariantCulture);
 
             Debug.Log(mass);
             
@@ -119,7 +119,6 @@ public class CsvReader1 : MonoBehaviour
             {
                 PlanetScript bodyScript2 = lightBodies[j].GetComponent<PlanetScript>();
                 Vector3 distanceVector = bodyScript2.transform.position - position1;
-                Debug.Log(distanceVector);
 
                 double mass2 = bodyScript2.mass;
 
