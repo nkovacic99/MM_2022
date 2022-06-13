@@ -18,7 +18,10 @@ public class CsvReader1 : MonoBehaviour
 
     // forces[i,j] is the force that the i-th body experiences from the j-th
     private Vector3[,] forces;
-    private int[,] cooler;
+    private bool[,] cooler;
+
+    private int stepSkipIndex = 0;
+    
 
     // Start is called before the first frame update
     void Awake()
@@ -47,7 +50,7 @@ public class CsvReader1 : MonoBehaviour
 
         forces = new Vector3[tableSize, tableSize];
 
-        cooler = new int[tableSize, tableSize];
+        cooler = new bool[tableSize, tableSize];
         
 
         
@@ -105,17 +108,36 @@ public class CsvReader1 : MonoBehaviour
     {   
 
 
+        //partial step skipping
+        // The first calculation in the nested for loop gets reevaluated only
+        // every n-th frame
+        int n = 5;
+        stepSkipIndex++;
+        int quantity = lightBodies.Length / n;
+        if (stepSkipIndex == n) {
+            stepSkipIndex = 0;
+        }
+        int start = quantity * (stepSkipIndex);
+        int end = quantity * (stepSkipIndex + 1);
+        if (stepSkipIndex == (n-1)) {
+            end = lightBodies.Length;
+        }
+
+
+
+
         // the calculation of forces.
         // G is provided on the top of the class.
 
-        for (int i = 0; i < lightBodies.Length; i++)
+        for (int i = start; i < end; i++)
         {   
             PlanetScript bodyScript1 = lightBodies[i].GetComponent<PlanetScript>();
             Vector3 position1 = bodyScript1.transform.position;
             double mass1 = bodyScript1.mass;
 
             for (int j = i+1; j < lightBodies.Length; j++)
-            {
+            {   
+
                 PlanetScript bodyScript2 = lightBodies[j].GetComponent<PlanetScript>();
                 Vector3 distanceVector = bodyScript2.transform.position - position1;
 
@@ -134,9 +156,11 @@ public class CsvReader1 : MonoBehaviour
             }
         }
 
+        
+        
 
         // Force summation and assignment
-        for (int i = 0; i < lightBodies.Length; i++)
+        for (int i = start; i < end; i++)
         {   
             Vector3 summedForce = new Vector3(0, 0, 0);
 
