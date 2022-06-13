@@ -111,7 +111,7 @@ public class CsvReader1 : MonoBehaviour
         //partial step skipping
         // The first calculation in the nested for loop gets reevaluated only
         // every n-th frame
-        int n = 5;
+        int n = 9;
         stepSkipIndex++;
         int quantity = lightBodies.Length / n;
         if (stepSkipIndex == n) {
