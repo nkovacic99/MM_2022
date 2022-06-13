@@ -5,7 +5,7 @@ using System;
 
 using System.Globalization;
 
-public class CsvReader : MonoBehaviour
+public class CsvReader1 : MonoBehaviour
 {
     public TextAsset textAssetData;
     public float dt = 0.00001f;
@@ -14,6 +14,9 @@ public class CsvReader : MonoBehaviour
     private GameObject heavyBody;
 
     private int numberOfCsvColumns = 7;
+
+    private float[,] forces;
+    private bool[,] cooler;
 
     // Start is called before the first frame update
     void Awake()
@@ -39,6 +42,15 @@ public class CsvReader : MonoBehaviour
     void populateSpace(string[] data) {
         // 5 columns, skipping the first line
         int tableSize = data.Length / numberOfCsvColumns - 1;
+
+        forces = new float[tableSize, tableSize];
+        Debug.Log(forces[0, 0]);
+        Debug.Log(forces.Length);
+
+        cooler = new bool[tableSize, tableSize];
+        Debug.Log(cooler[0, 0]);
+        
+
         
         lightBodies = new GameObject[tableSize];
         for (int i = 0; i < tableSize; i++) {
