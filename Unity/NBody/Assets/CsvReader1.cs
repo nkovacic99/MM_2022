@@ -8,15 +8,18 @@ using System.Globalization;
 public class CsvReader1 : MonoBehaviour
 {
     public TextAsset textAssetData;
-    public float dt = 0.00001f;
+    public float dt = 0.1f;
 
     private GameObject[] lightBodies;
     private GameObject heavyBody;
 
     private int numberOfCsvColumns = 7;
 
-    private float[,] forces;
-    private bool[,] cooler;
+    double G = 1;
+
+    // forces[i,j] is the force that the i-th body experiences from the j-th
+    private Vector3[,] forces;
+    private int[,] cooler;
 
     // Start is called before the first frame update
     void Awake()
@@ -24,11 +27,11 @@ public class CsvReader1 : MonoBehaviour
         heavyBody = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         heavyBody.transform.position.Set(0, 0, 0);
         Vector3 scale = heavyBody.transform.localScale;
-        scale.Set(10, 10, 10);
+        scale.Set(5, 5, 5);
         heavyBody.transform.localScale = scale;
 
         heavyBody.AddComponent<PlanetScript>();
-        heavyBody.GetComponent<PlanetScript>().addProperties(new Vector3(0,0,0), 100000);
+        heavyBody.GetComponent<PlanetScript>().addProperties(new Vector3(0,0,0), 10000);
 
         string[] data = readCSV();
         populateSpace(data);
@@ -43,11 +46,11 @@ public class CsvReader1 : MonoBehaviour
         // 5 columns, skipping the first line
         int tableSize = data.Length / numberOfCsvColumns - 1;
 
-        forces = new float[tableSize, tableSize];
+        forces = new Vector3[tableSize, tableSize];
         Debug.Log(forces[0, 0]);
         Debug.Log(forces.Length);
 
-        cooler = new bool[tableSize, tableSize];
+        cooler = new int[tableSize, tableSize];
         Debug.Log(cooler[0, 0]);
         
 
@@ -89,14 +92,63 @@ public class CsvReader1 : MonoBehaviour
     }
 
     void FixedUpdate()
-    {
-        // Calculate forces for all bodies
+    {   
+
+
+        // the calculation of forces.
+        // G is provided on the top of the class.
+
         for (int i = 0; i < lightBodies.Length; i++)
-        {
-            PlanetScript bodyScript = lightBodies[i].GetComponent<PlanetScript>();
-            bodyScript.resetForce();
-            bodyScript.addForce(heavyBody);
+        {   
+            PlanetScript bodyScript1 = lightBodies[i].GetComponent<PlanetScript>();
+            Vector3 position1 = bodyScript1.transform.position;
+            double mass1 = bodyScript1.mass;
+
+            for (int j = i+1; j < lightBodies.Length; j++)
+            {
+                PlanetScript bodyScript2 = lightBodies[j].GetComponent<PlanetScript>();
+                Vector3 distanceVector = bodyScript2.transform.position - position1;
+                Debug.Log(distanceVector);
+
+                double mass2 = bodyScript2.mass;
+
+                float scalar = (float) ( G * mass1 * mass2 / (Math.Pow(distanceVector.magnitude, 3)) );
+                Vector3 force = scalar * distanceVector;
+
+
+
+                forces[i, j] = force;
+                forces[j, i] = -force;
+
+
+            
+            }
         }
+
+
+        // Force summation and assignment
+        for (int i = 0; i < lightBodies.Length; i++)
+        {   
+            Vector3 summedForce = new Vector3(0, 0, 0);
+
+            for (int j = 0; j < lightBodies.Length; j++)
+            {   
+                if(i == j)
+                {
+                    continue;
+                }
+
+                summedForce += forces[i, j];
+            
+            }
+
+            PlanetScript bodyScript = lightBodies[i].GetComponent<PlanetScript>();
+            bodyScript.assignForce(summedForce);
+
+        }
+
+
+
 
         // Apply calculated forces
         for (int i = 0; i < lightBodies.Length; i++)

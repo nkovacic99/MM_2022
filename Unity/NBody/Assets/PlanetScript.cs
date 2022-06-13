@@ -37,6 +37,19 @@ public class PlanetScript : MonoBehaviour
         forceToAdd = new Vector3(0, 0, 0);
     }
 
+
+
+
+
+
+
+    //Assigngs the precalculated force vector to rhe object.
+    public void assignForce(Vector3 force)
+    {
+        forceToAdd = force;
+    }
+
+
     /**
      * Adds the gravitational force caused by another body to this body.
      * Does not apply the force yet (and does not move this body), as force
