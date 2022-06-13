@@ -6,8 +6,19 @@ working on the project.
 
 ## 0. Shitty Prototype in Python
 This is already mostly done. However, it is very slow and can only run calculations and
-rendering for about 100 bodies at once. This is mostly cause by the fact that even the
+rendering for about 50 bodies at once. This is mostly caused by the fact that even the
 rendering takes place on the CPU and not the GPU.
+
+### Running the Python application:
+- Head into the Python folder with `cd Python`
+- Install required libraries (if necessary) with `pip install -r requirements.txt`
+- Run the python application with `python n_body_problem.py`
+
+A dialog will appear, asking you to select a .csv file containing initial conditions of the system.
+After a file is selected, the simulation will start. You can **navigate the scene**:
+- Move by _dragging the mouse_
+- Zoom in and out using the _mouse scroll wheel_
+- Rotate aroudn the scene using pairs of keys: _A and D_, _W and S_, _Q and E_
 
 ## 1. Basic Prototype in _Unity_
 
