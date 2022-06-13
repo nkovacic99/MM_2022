@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 /**
  * This script defines properties of a single body (velocity and mass).
@@ -29,7 +30,9 @@ public class PlanetScript : MonoBehaviour
     {
         Vector3 acceleration = forceToAdd / (float) mass;   // Second Newton's Law
         velocity += acceleration * dt;          // Increase velocity based on given time step
-        transform.position += velocity * dt;    // Move body
+
+        float quadTime = (float) Math.Pow(dt, 2) * 0.5f;
+        transform.position += velocity * dt + acceleration * quadTime;    // Move body
     }
 
     public void resetForce()

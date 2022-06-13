@@ -8,14 +8,13 @@ using System.Globalization;
 public class CsvReader1 : MonoBehaviour
 {
     public TextAsset textAssetData;
-    public float dt = 0.0000000000001f;
+    public float dt = 0.01f;
+    public double G = 0.01f;
 
     private GameObject[] lightBodies;
     private GameObject heavyBody;
 
     private int numberOfCsvColumns = 7;
-
-    double G = 0.00001f;
 
     // forces[i,j] is the force that the i-th body experiences from the j-th
     private Vector3[,] forces;
