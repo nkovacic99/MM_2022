@@ -1,6 +1,6 @@
 using UnityEngine;
 using System;
-
+using System.IO;
 
 public enum SimulationMode
 {
@@ -28,6 +28,9 @@ public class PlanetManager : MonoBehaviour
     [Header("Simulation Settings")]
     public ComputeShader gravityComputeShader;
     public SimulationMode simulationMode = SimulationMode.computeOnCPU;
+    public Boolean exportToVideo = false;
+    public Vector2Int exportResolution = new Vector2Int(1280, 720);
+    private string folder = "Exports";
 
     [Header("Visual Settings")]
     public Boolean colorBodies = true;
@@ -50,6 +53,12 @@ public class PlanetManager : MonoBehaviour
 
     void Awake()
     {
+        if (exportToVideo)
+        {
+            Time.captureFramerate = 30;
+            Screen.SetResolution(exportResolution.x, exportResolution.y, false);
+        }
+
         // Read initial conditions and spawn bodies
         PlanetSpawner spawner = new PlanetSpawner();
         string[] initialConds = spawner.ReadCSV(initialConditionsCsv);
@@ -77,9 +86,40 @@ public class PlanetManager : MonoBehaviour
         maxMagnitude = float.MinValue;
         minMagnitude = float.MaxValue;
     }
+    void Update()
+    {
+        if (!exportToVideo)
+            return;
+
+        string filename = string.Format("{0}/Screenshots/{1:D06}.png", folder, Time.frameCount);
+        ScreenCapture.CaptureScreenshot(filename);
+
+        switch (simulationMode)
+        {
+            case SimulationMode.computeOnCPU: ComputeOnCPU(); break;
+            case SimulationMode.computeOnCPUWithStepSkipping: ComputeOnCPUWithStepSkipping(); break;
+            case SimulationMode.computeOnGPU: ComputeOnGPU(); break;
+        }
+
+        // Update velocity magnitudes used for coloring every 50 iterations
+        if (colorBodies && numberOfIterations % 50 == 0)
+        {
+            for (int i = 0; i < bodies.Length; i++)
+            {
+                PlanetScript bodyScript = bodiesObj[i].GetComponent<PlanetScript>();
+
+                if (bodyScript.velocity.magnitude > maxMagnitude) { maxMagnitude = bodyScript.velocity.magnitude; }
+                if (bodyScript.velocity.magnitude < minMagnitude) { minMagnitude = bodyScript.velocity.magnitude; }
+            }
+        }
+        numberOfIterations++;
+    }
 
     void FixedUpdate()
     {
+        if (exportToVideo)
+            return;
+
         switch (simulationMode)
         {
             case SimulationMode.computeOnCPU: ComputeOnCPU(); break;
@@ -132,6 +172,28 @@ public class PlanetManager : MonoBehaviour
             }
         }
         numberOfIterations++;
+    }
+
+    void OnDestroy()
+    {
+        if (exportToVideo)
+        {
+            // Make a video out of png files
+            string exportName = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".mp4";
+            System.Diagnostics.Process p = new System.Diagnostics.Process();
+            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.FileName = "ffmpeg";
+            p.StartInfo.Arguments = "-framerate 30 -i " + folder + "/Screenshots/%06d.png " + folder + "/" + exportName;
+            p.Start();
+            p.WaitForExit();
+
+            // Delete screenshots
+            DirectoryInfo di = new DirectoryInfo(folder + "/Screenshots");
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+        }   
     }
 
     void ComputeOnGPU()
