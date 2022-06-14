@@ -11,8 +11,7 @@ public class CsvReader1 : MonoBehaviour
     public float dt = 0.01f;
     public double G = 0.01f;
 
-    private GameObject[] lightBodies;
-    private GameObject heavyBody;
+    private GameObject[] bodies;
 
     private int numberOfCsvColumns = 7;
 
@@ -26,15 +25,6 @@ public class CsvReader1 : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        heavyBody = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        heavyBody.transform.position.Set(0, 0, 0);
-        Vector3 scale = heavyBody.transform.localScale;
-        scale.Set(0, 0, 0);
-        heavyBody.transform.localScale = scale;
-
-        heavyBody.AddComponent<PlanetScript>();
-        heavyBody.GetComponent<PlanetScript>().addProperties(new Vector3(0,0,0), 0);
-
         string[] data = readCSV();
         populateSpace(data);
     }
@@ -54,7 +44,7 @@ public class CsvReader1 : MonoBehaviour
         
 
         
-        lightBodies = new GameObject[tableSize];
+        bodies = new GameObject[tableSize];
         for (int i = 0; i < tableSize; i++) {
             GameObject body = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
@@ -99,7 +89,7 @@ public class CsvReader1 : MonoBehaviour
             body.GetComponent<PlanetScript>().addProperties(velocity, mass);
             body.transform.position = position;
 
-            lightBodies[i] = body;
+            bodies[i] = body;
             
         }
     }
@@ -113,14 +103,14 @@ public class CsvReader1 : MonoBehaviour
         // every n-th frame
         int n = 9;
         stepSkipIndex++;
-        int quantity = lightBodies.Length / n;
+        int quantity = bodies.Length / n;
         if (stepSkipIndex == n) {
             stepSkipIndex = 0;
         }
         int start = quantity * (stepSkipIndex);
         int end = quantity * (stepSkipIndex + 1);
         if (stepSkipIndex == (n-1)) {
-            end = lightBodies.Length;
+            end = bodies.Length;
         }
 
 
@@ -131,14 +121,14 @@ public class CsvReader1 : MonoBehaviour
 
         for (int i = start; i < end; i++)
         {   
-            PlanetScript bodyScript1 = lightBodies[i].GetComponent<PlanetScript>();
+            PlanetScript bodyScript1 = bodies[i].GetComponent<PlanetScript>();
             Vector3 position1 = bodyScript1.transform.position;
             double mass1 = bodyScript1.mass;
 
-            for (int j = i+1; j < lightBodies.Length; j++)
+            for (int j = i+1; j < bodies.Length; j++)
             {   
 
-                PlanetScript bodyScript2 = lightBodies[j].GetComponent<PlanetScript>();
+                PlanetScript bodyScript2 = bodies[j].GetComponent<PlanetScript>();
                 Vector3 distanceVector = bodyScript2.transform.position - position1;
 
                 double mass2 = bodyScript2.mass;
@@ -164,7 +154,7 @@ public class CsvReader1 : MonoBehaviour
         {   
             Vector3 summedForce = new Vector3(0, 0, 0);
 
-            for (int j = 0; j < lightBodies.Length; j++)
+            for (int j = 0; j < bodies.Length; j++)
             {   
                 if(i == j)
                 {
@@ -175,7 +165,7 @@ public class CsvReader1 : MonoBehaviour
             
             }
 
-            PlanetScript bodyScript = lightBodies[i].GetComponent<PlanetScript>();
+            PlanetScript bodyScript = bodies[i].GetComponent<PlanetScript>();
             bodyScript.assignForce(summedForce);
 
         }
@@ -184,9 +174,9 @@ public class CsvReader1 : MonoBehaviour
 
 
         // Apply calculated forces
-        for (int i = 0; i < lightBodies.Length; i++)
+        for (int i = 0; i < bodies.Length; i++)
         {
-            PlanetScript bodyScript = lightBodies[i].GetComponent<PlanetScript>();
+            PlanetScript bodyScript = bodies[i].GetComponent<PlanetScript>();
             bodyScript.applyForce(dt);
         }
     }
