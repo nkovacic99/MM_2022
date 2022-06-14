@@ -111,7 +111,7 @@ public class PlanetManager : MonoBehaviour
                         v1.mass = joinedMass;
                         bodies[j].mass = 0.0f;
                         v2.mass = 0.0d;
-                        v2.r.enabled = false;
+                        v2.rend.enabled = false;
 
                     }
                 }
