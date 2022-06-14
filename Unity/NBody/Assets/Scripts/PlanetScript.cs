@@ -26,11 +26,15 @@ public class PlanetScript : MonoBehaviour
      */
     public void applyForce(float dt)
     {
-        Vector3 acceleration = forceToAdd / (float) mass;   // Second Newton's Law
-        velocity += acceleration * dt;          // Increase velocity based on given time step
+        // Second Newton's Law
+        Vector3 acceleration = forceToAdd / (float) mass;
 
-        float quadTime = (float) Math.Pow(dt, 2) * 0.5f;
-        transform.position += velocity * dt + acceleration * quadTime;    // Move body
+        // Formula for the enakomerno pospešeno gibanje
+        float quadTime = dt * dt * 0.5f;
+        transform.position += velocity * dt + acceleration * quadTime;
+
+        // Increase velocity
+        velocity += acceleration * dt;
     }
 
     public void assignForce(Vector3 force)
