@@ -23,6 +23,9 @@ public class PlanetManager : MonoBehaviour
 
     private int stepSkipIndex = 0;
     
+    private float maxMagnitude;
+    private float minMagnitude;
+    private int numberOfIterations;
     void Awake()
     {
         PlanetSpawner spawner = new PlanetSpawner();
@@ -32,6 +35,8 @@ public class PlanetManager : MonoBehaviour
             forces2d = new Vector3[bodies.Length, bodies.Length];
         else
             forces = new Vector3[bodies.Length];
+        maxMagnitude = float.MinValue;
+        minMagnitude = float.MaxValue;
     }
 
     void FixedUpdate()
@@ -68,9 +73,21 @@ public class PlanetManager : MonoBehaviour
         {
             PlanetScript planetScript = bodies[i].GetComponent<PlanetScript>();
             planetScript.assignForce(forces[i]);
-            planetScript.applyForce(dt);
+            planetScript.applyForce(dt, maxMagnitude, minMagnitude);
             positions[i] = bodies[i].transform.position;
         }
+
+        if (numberOfIterations % 50 == 0 )
+        {
+            for (int i = 0; i < bodies.Length; i++)
+            {
+            PlanetScript bodyScript = bodies[i].GetComponent<PlanetScript>();
+
+            if (bodyScript.velocity.magnitude > maxMagnitude) { maxMagnitude = bodyScript.velocity.magnitude; }
+            if (bodyScript.velocity.magnitude < minMagnitude) { minMagnitude = bodyScript.velocity.magnitude; }
+            }
+        }
+        numberOfIterations ++;
     }
 
     void PartialStepSkipping()
@@ -141,8 +158,20 @@ public class PlanetManager : MonoBehaviour
         for (int i = 0; i < bodies.Length; i++)
         {
             PlanetScript bodyScript = bodies[i].GetComponent<PlanetScript>();
-            bodyScript.applyForce(dt);
+            bodyScript.applyForce(dt, maxMagnitude, minMagnitude);
             positions[i] = bodies[i].transform.position;
         }
+
+        if (numberOfIterations % 50 == 0 )
+        {
+            for (int i = 0; i < bodies.Length; i++)
+            {
+            PlanetScript bodyScript = bodies[i].GetComponent<PlanetScript>();
+
+            if (bodyScript.velocity.magnitude > maxMagnitude) { maxMagnitude = bodyScript.velocity.magnitude; }
+            if (bodyScript.velocity.magnitude < minMagnitude) { minMagnitude = bodyScript.velocity.magnitude; }
+            }
+        }
+        numberOfIterations ++;
     }
 }
