@@ -5,19 +5,16 @@ using System;
 
 using System.Globalization;
 
-public class CsvReader1 : MonoBehaviour
+public class PlanetManager : MonoBehaviour
 {
-    public TextAsset textAssetData;
+    public TextAsset initialConditionsCsv;
     public float dt = 0.01f;
     public double G = 0.01f;
 
     private GameObject[] bodies;
 
-    private int numberOfCsvColumns = 7;
-
     // forces[i,j] is the force that the i-th body experiences from the j-th
     private Vector3[,] forces;
-    private bool[,] cooler;
 
     private int stepSkipIndex = 0;
     
@@ -25,73 +22,9 @@ public class CsvReader1 : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        string[] data = readCSV();
-        populateSpace(data);
-    }
-
-    string[] readCSV() {
-        string[] data = textAssetData.text.Split(new string[] {",", "\n"}, StringSplitOptions.None);
-        return data;
-    }
-    
-    void populateSpace(string[] data) {
-        // 5 columns, skipping the first line
-        int tableSize = data.Length / numberOfCsvColumns - 1;
-
-        forces = new Vector3[tableSize, tableSize];
-
-        cooler = new bool[tableSize, tableSize];
-        
-
-        
-        bodies = new GameObject[tableSize];
-        for (int i = 0; i < tableSize; i++) {
-            GameObject body = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-
-            SphereCollider sphereCollider = body.GetComponent<SphereCollider>();
-            if (sphereCollider) Destroy(sphereCollider);
-
-            // Turn off some rendering settings that affect performance
-            MeshRenderer meshRenderer = body.GetComponent<MeshRenderer>();
-            meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            meshRenderer.receiveShadows = false;
-            meshRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
-            meshRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-            
-            float positionX = float.Parse(data[numberOfCsvColumns * (i+1)], CultureInfo.InvariantCulture);
-            float positionY = float.Parse(data[numberOfCsvColumns * (i+1) + 1], CultureInfo.InvariantCulture);
-            float positionZ = float.Parse(data[numberOfCsvColumns * (i+1) + 2], CultureInfo.InvariantCulture);
-            Vector3 position = new Vector3(positionX, positionY, positionZ);
-
-            Debug.Log(positionX);
-            Debug.Log(positionY);
-            Debug.Log(positionZ);
-
-
-            float velocityX = float.Parse(data[numberOfCsvColumns * (i+1) + 3], CultureInfo.InvariantCulture);
-            float velocityY = float.Parse(data[numberOfCsvColumns * (i+1) + 4], CultureInfo.InvariantCulture);
-            float velocityZ = float.Parse(data[numberOfCsvColumns * (i+1) + 5], CultureInfo.InvariantCulture);
-            // Vector3 velocity = 1000 * Vector3.Cross(position, new Vector3(-position.y, position.x, position.z)).normalized;
-            Vector3 velocity = new Vector3(velocityX, velocityY, velocityZ);
-
-            Debug.Log(velocityX);
-            Debug.Log(velocityY);
-            Debug.Log(velocityZ);
-
-
-            
-            double mass = double.Parse(data[numberOfCsvColumns * (i+1) + 6], CultureInfo.InvariantCulture);
-
-            Debug.Log(mass);
-            
-
-            body.AddComponent<PlanetScript>();
-            body.GetComponent<PlanetScript>().addProperties(velocity, mass);
-            body.transform.position = position;
-
-            bodies[i] = body;
-            
-        }
+        PlanetSpawner spawner = new PlanetSpawner(initialConditionsCsv);
+        bodies = spawner.bodies;
+        forces = new Vector3[bodies.Length, bodies.Length];
     }
 
     void FixedUpdate()
