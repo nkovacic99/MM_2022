@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlanetSpawner : MonoBehaviour
+using System.Globalization;
+
+public class PlanetSpawner
 {
     private const int bodyResolution = 2;
     private const int numberOfCsvColumns = 7;
@@ -29,6 +31,8 @@ public class PlanetSpawner : MonoBehaviour
         // Create an empty array of bodies
         int numberOfBodies = data.Length / numberOfCsvColumns - 1;
         bodies = new GameObject[numberOfBodies];
+
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
         for (int i = 0; i < numberOfBodies; i++)
         {
