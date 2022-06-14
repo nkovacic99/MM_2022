@@ -97,7 +97,7 @@ public class PlanetManager : MonoBehaviour
                 {
                     PlanetScript v2 = bodiesObj[j].GetComponent<PlanetScript>();
                     if (v2.mass == 0.0d) { continue; }
-                    if (Vector3.Distance(bodies[i].position, bodies[j].position) < 2) {
+                    if (Vector3.Distance(bodies[i].position, bodies[j].position) < System.Math.Min(System.Math.Pow(v1.mass, (double) 1/3), System.Math.Pow(v2.mass, (double) 1/3))) {
                         double joinedMass = v1.mass + v2.mass;
 
                         float velocityX = ((float)v1.mass * v1.velocity[0] + (float)v2.mass * v2.velocity[0]) / (float)joinedMass;
@@ -109,7 +109,10 @@ public class PlanetManager : MonoBehaviour
                         v1.velocity = velocity;
                         bodies[i].mass = (float) joinedMass;
                         v1.mass = joinedMass;
+                        double r = System.Math.Pow(joinedMass, (double) 1/6);
+                        bodiesObj[i].transform.localScale = new Vector3((float) r, (float) r, (float) r);
                         bodies[j].mass = 0.0f;
+                        bodiesObj[j].transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
                         v2.mass = 0.0d;
                         v2.rend.enabled = false;
 

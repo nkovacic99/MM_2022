@@ -64,6 +64,8 @@ public class PlanetSpawner
             body.AddComponent<PlanetScript>();
             body.GetComponent<PlanetScript>().addProperties(velocity, mass);
             body.transform.position = position;
+            double r = System.Math.Pow(mass, (double)1/6);
+            body.transform.localScale = new Vector3((float)r, (float)r, (float)r);
 
             initialPositions[i] = position;
             initialVelocities[i] = velocity;
