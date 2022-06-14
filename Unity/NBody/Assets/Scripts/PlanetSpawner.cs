@@ -12,25 +12,22 @@ public class PlanetSpawner
     private Mesh bodyMesh;
     private Material bodyMaterial;
 
-    public GameObject[] bodies;
-
-    public PlanetSpawner(TextAsset initialConditionsCsv)
+    public PlanetSpawner()
     {
         // Create shared Material and Mesh
         GenerateMesh();
         bodyMaterial = new Material(Shader.Find("Standard"));
         bodyMaterial.enableInstancing = true;
-
-        // Read initial conditions and populate space
-        string[] data = ReadCSV(initialConditionsCsv);
-        PopulateSpace(data);
     }
 
-    void PopulateSpace(string[] data)
+    public (GameObject[], Vector3[], double[]) PopulateSpace(string[] data)
     {
         // Create an empty array of bodies
         int numberOfBodies = data.Length / numberOfCsvColumns - 1;
-        bodies = new GameObject[numberOfBodies];
+        GameObject[] bodies = new GameObject[numberOfBodies];
+        Vector3[] initialPositions = new Vector3[numberOfBodies];
+        Vector3[] initialVelocities = new Vector3[numberOfBodies];
+        double[] initialMasses = new double[numberOfBodies];
 
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
@@ -68,11 +65,16 @@ public class PlanetSpawner
             body.GetComponent<PlanetScript>().addProperties(velocity, mass);
             body.transform.position = position;
 
+            initialPositions[i] = position;
+            initialVelocities[i] = velocity;
+            initialMasses[i] = mass;
             bodies[i] = body;
         }
+
+        return (bodies, initialPositions, initialMasses);
     }
 
-    string[] ReadCSV(TextAsset initialConditionsCsv)
+    public string[] ReadCSV(TextAsset initialConditionsCsv)
     {
         string[] data = initialConditionsCsv.text.Split(new string[] { ",", "\n" }, System.StringSplitOptions.None);
         return data;
