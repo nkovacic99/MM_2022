@@ -45,6 +45,18 @@ public class PlanetManager : MonoBehaviour
             PartialStepSkipping();
         else
             NoStepSkipping();
+            
+        if (numberOfIterations % 50 == 0 )
+        {
+            for (int i = 0; i < bodies.Length; i++)
+            {
+            PlanetScript bodyScript = bodies[i].GetComponent<PlanetScript>();
+
+            if (bodyScript.velocity.magnitude > maxMagnitude) { maxMagnitude = bodyScript.velocity.magnitude; }
+            if (bodyScript.velocity.magnitude < minMagnitude) { minMagnitude = bodyScript.velocity.magnitude; }
+            }
+        }
+        numberOfIterations ++;
     }
 
     void NoStepSkipping()
@@ -75,19 +87,7 @@ public class PlanetManager : MonoBehaviour
             planetScript.assignForce(forces[i]);
             planetScript.applyForce(dt, maxMagnitude, minMagnitude);
             positions[i] = bodies[i].transform.position;
-        }
-
-        if (numberOfIterations % 50 == 0 )
-        {
-            for (int i = 0; i < bodies.Length; i++)
-            {
-            PlanetScript bodyScript = bodies[i].GetComponent<PlanetScript>();
-
-            if (bodyScript.velocity.magnitude > maxMagnitude) { maxMagnitude = bodyScript.velocity.magnitude; }
-            if (bodyScript.velocity.magnitude < minMagnitude) { minMagnitude = bodyScript.velocity.magnitude; }
-            }
-        }
-        numberOfIterations ++;
+        }        
     }
 
     void PartialStepSkipping()
@@ -161,17 +161,5 @@ public class PlanetManager : MonoBehaviour
             bodyScript.applyForce(dt, maxMagnitude, minMagnitude);
             positions[i] = bodies[i].transform.position;
         }
-
-        if (numberOfIterations % 50 == 0 )
-        {
-            for (int i = 0; i < bodies.Length; i++)
-            {
-            PlanetScript bodyScript = bodies[i].GetComponent<PlanetScript>();
-
-            if (bodyScript.velocity.magnitude > maxMagnitude) { maxMagnitude = bodyScript.velocity.magnitude; }
-            if (bodyScript.velocity.magnitude < minMagnitude) { minMagnitude = bodyScript.velocity.magnitude; }
-            }
-        }
-        numberOfIterations ++;
     }
 }
