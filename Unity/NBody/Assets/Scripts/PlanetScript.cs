@@ -11,10 +11,10 @@ using System;
 public class PlanetScript : MonoBehaviour
 {
     public Vector3 velocity;
-    private double mass;
+    public double mass;
     private Vector3 forceToAdd;
 
-    private Renderer r;
+    public Renderer r;
 
     public void addProperties(Vector3 velocity, double mass)
     {
@@ -31,10 +31,11 @@ public class PlanetScript : MonoBehaviour
      */
     public void applyForce(float dt, float maxMagnitude, float minMagnitude)
     {
+        if (this.mass == 0.0d) { return; }
         // Second Newton's Law
         Vector3 acceleration = forceToAdd / (float) mass;
 
-        // Formula for the enakomerno pospešeno gibanje
+        // Formula for the enakomerno pospeï¿½eno gibanje
         float quadTime = dt * dt * 0.5f;
         transform.position += velocity * dt + acceleration * quadTime;
 

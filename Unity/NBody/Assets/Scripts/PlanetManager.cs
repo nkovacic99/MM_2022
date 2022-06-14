@@ -23,6 +23,8 @@ public class PlanetManager : MonoBehaviour
     public float dt = 0.01f;
     public float G = 0.01f;
 
+    public Boolean enableCollision = false;
+
     [Header("Simulation Settings")]
     public ComputeShader gravityComputeShader;
     public SimulationMode simulationMode = SimulationMode.computeOnCPU;
@@ -79,6 +81,36 @@ public class PlanetManager : MonoBehaviour
             case SimulationMode.computeOnGPU: ComputeOnGPU(); break;
         }
 
+        if (enableCollision)
+        {
+            for (int i = 0; i < bodies.Length; i++)
+            {
+                PlanetScript v1 = bodiesObj[i].GetComponent<PlanetScript>();
+                if (v1.mass == 0.0d) { continue; }
+                for (int j = i+1; j < bodies.Length; j++)
+                {
+                    PlanetScript v2 = bodiesObj[j].GetComponent<PlanetScript>();
+                    if (v2.mass == 0.0d) { continue; }
+                    if (Vector3.Distance(bodies[i].position, bodies[j].position) < 2) {
+                        double joinedMass = v1.mass + v2.mass;
+
+                        float velocityX = ((float)v1.mass * v1.velocity[0] + (float)v2.mass * v2.velocity[0]) / (float)joinedMass;
+                        float velocityY = ((float)v1.mass * v1.velocity[1] + (float)v2.mass * v2.velocity[1]) / (float)joinedMass;
+                        float velocityZ = ((float)v1.mass * v1.velocity[2] + (float)v2.mass * v2.velocity[2]) / (float)joinedMass;
+
+                        Vector3 velocity = new Vector3(velocityX, velocityY, velocityZ);
+
+                        v1.velocity = velocity;
+                        bodies[i].mass = (float) joinedMass;
+                        v1.mass = joinedMass;
+                        bodies[j].mass = 0.0f;
+                        v2.mass = 0.0d;
+                        v2.r.enabled = false;
+
+                    }
+                }
+            }
+        }
         // Update velocity magnitudes used for coloring every 50 iterations
         if (numberOfIterations % 50 == 0)
         {
@@ -118,9 +150,12 @@ public class PlanetManager : MonoBehaviour
         for (int i = 0; i < bodiesObj.Length; i++)
         {
             PlanetScript planetScript = bodiesObj[i].GetComponent<PlanetScript>();
-            planetScript.assignForce(bodies[i].force);
-            planetScript.applyForce(dt, maxMagnitude, minMagnitude);
-            bodies[i].position = bodiesObj[i].transform.position;
+            if (planetScript.mass != 0.0d)
+            { 
+                planetScript.assignForce(bodies[i].force);
+                planetScript.applyForce(dt, maxMagnitude, minMagnitude);
+                bodies[i].position = bodiesObj[i].transform.position;
+            }
         }
     }
 
