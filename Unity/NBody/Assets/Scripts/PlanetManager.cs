@@ -29,6 +29,9 @@ public class PlanetManager : MonoBehaviour
     public ComputeShader gravityComputeShader;
     public SimulationMode simulationMode = SimulationMode.computeOnCPU;
 
+    [Header("Visual Settings")]
+    public Boolean colorBodies = true;
+
     // Arrays for storing body objects and their properties
     private GameObject[] bodiesObj;
     private Body[] bodies;
@@ -40,9 +43,10 @@ public class PlanetManager : MonoBehaviour
     private const int nStepsSkip = 9;
     private const int numShaderThreads = 100;
 
+    private Material[] colorMaterials;
     private float maxMagnitude;
     private float minMagnitude;
-    private int numberOfIterations;
+    private int numberOfIterations = 0;
 
     void Awake()
     {
@@ -68,6 +72,8 @@ public class PlanetManager : MonoBehaviour
         if (simulationMode == SimulationMode.computeOnCPUWithStepSkipping)
             forcesAll = new Vector3[bodiesObj.Length, bodiesObj.Length];
 
+        // Initialize body colors
+        GenerateColoredMaterials();
         maxMagnitude = float.MinValue;
         minMagnitude = float.MaxValue;
     }
@@ -112,7 +118,7 @@ public class PlanetManager : MonoBehaviour
             }
         }
         // Update velocity magnitudes used for coloring every 50 iterations
-        if (numberOfIterations % 50 == 0)
+        if (colorBodies && numberOfIterations % 50 == 0)
         {
             for (int i = 0; i < bodies.Length; i++)
             {
@@ -150,12 +156,18 @@ public class PlanetManager : MonoBehaviour
         for (int i = 0; i < bodiesObj.Length; i++)
         {
             PlanetScript planetScript = bodiesObj[i].GetComponent<PlanetScript>();
+
             if (planetScript.mass != 0.0d)
             { 
                 planetScript.assignForce(bodies[i].force);
                 planetScript.applyForce(dt, maxMagnitude, minMagnitude);
                 bodies[i].position = bodiesObj[i].transform.position;
             }
+            if (colorBodies)
+                planetScript.setColor( DetermineColorMaterial(planetScript.velocity.sqrMagnitude) );
+            planetScript.assignForce(bodies[i].force);
+            planetScript.applyForce(dt, maxMagnitude, minMagnitude);
+            bodies[i].position = bodiesObj[i].transform.position;
         }
     }
 
@@ -189,6 +201,9 @@ public class PlanetManager : MonoBehaviour
             planetScript.assignForce(bodies[i].force);
             planetScript.applyForce(dt, maxMagnitude, minMagnitude);
             bodies[i].position = bodiesObj[i].transform.position;
+
+            if (colorBodies)
+                planetScript.setColor( DetermineColorMaterial(planetScript.velocity.sqrMagnitude) );
         }
     }
 
@@ -250,6 +265,30 @@ public class PlanetManager : MonoBehaviour
             PlanetScript bodyScript = bodiesObj[i].GetComponent<PlanetScript>();
             bodyScript.applyForce(dt, maxMagnitude, minMagnitude);
             bodies[i].position = bodiesObj[i].transform.position;
+
+            if (colorBodies)
+                bodyScript.setColor( DetermineColorMaterial(bodyScript.velocity.sqrMagnitude) );
         }
+    }
+
+    void GenerateColoredMaterials()
+    {
+        colorMaterials = new Material[128];
+        for (int colorIx = 0; colorIx < 256 / 2; colorIx++)
+        {
+            Material material = new Material(Shader.Find("Standard"));
+            material.color = new Color(2 * colorIx, 0f, 255f - 2 * colorIx, 255f);
+            material.enableInstancing = true;
+            colorMaterials[colorIx] = material;
+        }
+    }
+
+    public Material DetermineColorMaterial(float magnitude)
+    {
+        float colorVal = (magnitude - minMagnitude) / (maxMagnitude - minMagnitude) * 255f;
+        int colorIx = (int) (colorVal / 2);
+        if (colorIx < 0) colorIx = 0;
+        if (colorIx >= colorMaterials.Length) colorIx = colorMaterials.Length - 1;
+        return colorMaterials[colorIx];
     }
 }
