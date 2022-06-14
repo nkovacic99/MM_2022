@@ -14,15 +14,14 @@ public class PlanetScript : MonoBehaviour
     private double mass;
     private Vector3 forceToAdd;
 
-    private Renderer r;
+    private MeshRenderer rend;
 
     public void addProperties(Vector3 velocity, double mass)
     {
         this.velocity = velocity;
         this.mass = mass;
 
-        this.r = this.GetComponent<Renderer>();
-        r.material.color = new Color(0f, 0f, 255f, 255f);
+        rend = GetComponent<MeshRenderer>();
     }
 
     /**
@@ -38,11 +37,12 @@ public class PlanetScript : MonoBehaviour
         float quadTime = dt * dt * 0.5f;
         transform.position += velocity * dt + acceleration * quadTime;
 
-        velocity += acceleration * dt;
+        velocity += acceleration * dt;  
+    }
 
-        // Color the body based on its velocity
-        float colorVal = MathF.Min((velocity.sqrMagnitude - minMagnitude) / (maxMagnitude - minMagnitude) * 255f, 255f);
-        r.material.color = new Color(colorVal, 0f, 255f - colorVal, 255f);
+    public void setColor(Material colorMaterial)
+    {
+        rend.sharedMaterial = colorMaterial;
     }
 
     public void assignForce(Vector3 force)
