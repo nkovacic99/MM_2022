@@ -36,9 +36,12 @@ public class PlanetManager : MonoBehaviour
     private Vector3[,] forcesAll;
     private int stepSkipIndex = 0;
     private const int nStepsSkip = 9;
-
     private const int numShaderThreads = 100;
-    
+
+    private float maxMagnitude;
+    private float minMagnitude;
+    private int numberOfIterations;
+
     void Awake()
     {
         // Read initial conditions and spawn bodies
@@ -62,6 +65,9 @@ public class PlanetManager : MonoBehaviour
         // Only allocate memory for all forces if the selected mode is 'Step Skipping'
         if (simulationMode == SimulationMode.computeOnCPUWithStepSkipping)
             forcesAll = new Vector3[bodiesObj.Length, bodiesObj.Length];
+
+        maxMagnitude = float.MinValue;
+        minMagnitude = float.MaxValue;
     }
 
     void FixedUpdate()
@@ -72,6 +78,19 @@ public class PlanetManager : MonoBehaviour
             case SimulationMode.computeOnCPUWithStepSkipping: ComputeOnCPUWithStepSkipping(); break;
             case SimulationMode.computeOnGPU: ComputeOnGPU(); break;
         }
+
+        // Update velocity magnitudes used for coloring every 50 iterations
+        if (numberOfIterations % 50 == 0)
+        {
+            for (int i = 0; i < bodies.Length; i++)
+            {
+                PlanetScript bodyScript = bodiesObj[i].GetComponent<PlanetScript>();
+
+                if (bodyScript.velocity.magnitude > maxMagnitude) { maxMagnitude = bodyScript.velocity.magnitude; }
+                if (bodyScript.velocity.magnitude < minMagnitude) { minMagnitude = bodyScript.velocity.magnitude; }
+            }
+        }
+        numberOfIterations++;
     }
 
     void ComputeOnGPU()
@@ -100,7 +119,7 @@ public class PlanetManager : MonoBehaviour
         {
             PlanetScript planetScript = bodiesObj[i].GetComponent<PlanetScript>();
             planetScript.assignForce(bodies[i].force);
-            planetScript.applyForce(dt);
+            planetScript.applyForce(dt, maxMagnitude, minMagnitude);
             bodies[i].position = bodiesObj[i].transform.position;
         }
     }
@@ -133,7 +152,7 @@ public class PlanetManager : MonoBehaviour
         {
             PlanetScript planetScript = bodiesObj[i].GetComponent<PlanetScript>();
             planetScript.assignForce(bodies[i].force);
-            planetScript.applyForce(dt);
+            planetScript.applyForce(dt, maxMagnitude, minMagnitude);
             bodies[i].position = bodiesObj[i].transform.position;
         }
     }
@@ -194,7 +213,7 @@ public class PlanetManager : MonoBehaviour
         for (int i = 0; i < bodiesObj.Length; i++)
         {
             PlanetScript bodyScript = bodiesObj[i].GetComponent<PlanetScript>();
-            bodyScript.applyForce(dt);
+            bodyScript.applyForce(dt, maxMagnitude, minMagnitude);
             bodies[i].position = bodiesObj[i].transform.position;
         }
     }

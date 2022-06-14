@@ -191,7 +191,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -250}
+  m_LocalPosition: {x: 0, y: 1, z: -600}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ff623c807d3d94ea4edaa59f799cb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialConditionsCsv: {fileID: 4900000, guid: 5f1262ed689117647914c626127ce6e7, type: 3}
+  initialConditionsCsv: {fileID: 4900000, guid: e95344ead61ff084a8e63253dfa0cce5, type: 3}
   dt: 0
   G: 1
   gravityComputeShader: {fileID: 7200000, guid: c4ad4317c6398a04f80422b83d3d93db, type: 3}
