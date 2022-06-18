@@ -17,15 +17,18 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 {
     float i = id.x;
     float3 force = { 0.0f, 0.0f, 0.0f };
+
     if (bodies[i].mass == 0.0f) {
         bodies[i].force = force;
         return;
     }
+
     for (int j = 0; j < numBodies; j++) {
         if (i == j || bodies[j].mass == 0.0f) continue;
         float3 distVector = bodies[j].position - bodies[i].position;
         float scalar = G * bodies[i].mass * bodies[j].mass / pow(length(distVector), 3);
         force += scalar * distVector;
     }
+
     bodies[i].force = force;
 }
