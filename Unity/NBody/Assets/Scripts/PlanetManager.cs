@@ -34,6 +34,8 @@ public class PlanetManager : MonoBehaviour
 
     [Header("Visual Settings")]
     public Boolean colorBodies = true;
+    public Boolean addLights = false;
+    public float sizeModifier = 1.0f;
 
     // Arrays for storing body objects and their properties
     private GameObject[] bodiesObj;
@@ -64,7 +66,16 @@ public class PlanetManager : MonoBehaviour
         string[] initialConds = spawner.ReadCSV(initialConditionsCsv);
         Vector3[] positions;
         double[] masses;
-        (bodiesObj, positions, masses) = spawner.PopulateSpace(initialConds);
+        (bodiesObj, positions, masses) = spawner.PopulateSpace(initialConds, transform);
+
+        // Add lights (if enabled)
+        if (addLights)
+            foreach (GameObject bodyObj in bodiesObj)
+                bodyObj.AddComponent<Light>();
+
+        // Modify radius of bodies
+        foreach (GameObject bodyObj in bodiesObj)
+            bodyObj.transform.localScale = sizeModifier * bodyObj.transform.localScale;
 
         // Save positions and masses into the array
         bodies = new Body[bodiesObj.Length];

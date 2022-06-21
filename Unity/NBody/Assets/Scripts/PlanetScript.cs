@@ -34,11 +34,8 @@ public class PlanetScript : MonoBehaviour
         // Second Newton's Law
         Vector3 acceleration = forceToAdd / (float) mass;
 
-        // Formula for the enakomerno pospe�eno gibanje
-        float quadTime = dt * dt * 0.5f;
-        transform.position += velocity * dt + acceleration * quadTime;
-
-        velocity += acceleration * dt;  
+        velocity += acceleration * dt;
+        transform.position += velocity * dt;
     }
 
     public void setColor(Material colorMaterial)

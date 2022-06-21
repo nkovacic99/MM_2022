@@ -20,7 +20,7 @@ public class PlanetSpawner
         bodyMaterial.enableInstancing = true;
     }
 
-    public (GameObject[], Vector3[], double[]) PopulateSpace(string[] data)
+    public (GameObject[], Vector3[], double[]) PopulateSpace(string[] data, Transform parent)
     {
         // Create an empty array of bodies
         int numberOfBodies = data.Length / numberOfCsvColumns - 1;
@@ -35,6 +35,7 @@ public class PlanetSpawner
         {
             // Create an empty GameObject
             GameObject body = new GameObject("Planet");
+            body.transform.parent = parent;
 
             // Add a Mesh to the body
             body.AddComponent<MeshFilter>().sharedMesh = bodyMesh;
@@ -63,7 +64,7 @@ public class PlanetSpawner
             // Add properties to the body
             body.AddComponent<PlanetScript>();
             body.GetComponent<PlanetScript>().addProperties(velocity, mass);
-            body.transform.position = position;
+            body.transform.localPosition = position;
             double r = System.Math.Pow(mass, (double)1/6);
             body.transform.localScale = new Vector3((float)r, (float)r, (float)r);
 
