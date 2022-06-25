@@ -343,7 +343,7 @@ public class PlanetManager : MonoBehaviour
             System.Diagnostics.Process p = new System.Diagnostics.Process();
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.FileName = "ffmpeg";
-            p.StartInfo.Arguments = "-framerate 30 -i " + exportFolder + "/Screenshots/%06d.png " + exportFolder + "/" + exportName;
+            p.StartInfo.Arguments = "-framerate 60 -i " + exportFolder + "/Screenshots/%06d.png " + exportFolder + "/" + exportName;
             p.Start();
             p.WaitForExit();
         }

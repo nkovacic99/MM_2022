@@ -20,6 +20,10 @@ public class TitleMenu : MonoBehaviour
     public Toggle toggleColors;
     public Toggle toggleCollision;
 
+    private void Start()
+    {
+        Cursor.visible = true;
+    }
     public void StartSimulation(string initialCondsFilePath)
     {
         SimulationParameters.initConditionsFilename = initialCondsFilePath;

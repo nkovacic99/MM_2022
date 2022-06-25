@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -164,7 +165,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 2000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -198,6 +199,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88e0d47f79b7ca14b897a8a0cf704e9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1565905963
 GameObject:
   m_ObjectHideFlags: 0
@@ -248,9 +261,8 @@ MonoBehaviour:
   G: 10
   enableCollision: 0
   gravityComputeShader: {fileID: 7200000, guid: c4ad4317c6398a04f80422b83d3d93db, type: 3}
-  simulationMode: 2
+  computeMode: 2
   exportToVideo: 0
-  exportResolution: {x: 1920, y: 1080}
   colorBodies: 0
   addLights: 0
   sizeModifier: 1
