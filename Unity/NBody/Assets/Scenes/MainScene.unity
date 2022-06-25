@@ -242,12 +242,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ff623c807d3d94ea4edaa59f799cb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialConditionsCsv: {fileID: 4900000, guid: 50bebb4b3afa8784aaa7310f948e289e, type: 3}
+  loadFromSimParams: 1
+  initialConditionsCsv: {fileID: 4900000, guid: 6f0b208cfd742e143863e118b5efdff5, type: 3}
   dt: 0.005
   G: 10
-  enableCollision: 1
+  enableCollision: 0
   gravityComputeShader: {fileID: 7200000, guid: c4ad4317c6398a04f80422b83d3d93db, type: 3}
   simulationMode: 2
   exportToVideo: 0
   exportResolution: {x: 1920, y: 1080}
   colorBodies: 0
+  addLights: 0
+  sizeModifier: 1
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
