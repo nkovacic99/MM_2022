@@ -1,81 +1,52 @@
-# N-Body Problem
+# Introduction
 
-A plan for working on the *Mathematical Modelling* project is described below. Perhaps it would
-also be good to dedicate some time to writing a draft of the **Report** during all phases of
-working on the project.
+Due to the project being quite large, we included a simple README file, to make it easier to navigate for others.
 
-## 0. Shitty Prototype in Python
-This is already mostly done. However, it is very slow and can only run calculations and
-rendering for about 50 bodies at once. This is mostly caused by the fact that even the
-rendering takes place on the CPU and not the GPU.
+# Structure of the project
+Project is structured in folders
 
-### Running the Python application:
-- Head into the Python folder with `cd Python`
-- Install required libraries (if necessary) with `pip install -r requirements.txt`
-- Run the python application with `python n_body_problem.py`
+## Time Analysis
+Time Analysis folder contains analysis of the running times for different implementations and a python script for plotting said analysis.
 
-A dialog will appear, asking you to select a .csv file containing initial conditions of the system.
-After a file is selected, the simulation will start. You can **navigate the scene**:
-- Move by _dragging the mouse_
-- Zoom in and out using the _mouse scroll wheel_
-- Rotate aroudn the scene using pairs of keys: _A and D_, _W and S_, _Q and E_
+## Presentation 
+Contains the videos of the main (and more impressive) simulations. We recommend having a look at them, because they truly are beautiful.
 
-## 1. Basic Prototype in _Unity_
+## Python 
+Contains the Python implementation of the project. 
 
-First we need to create a working prototype in Unity that is capable of reading 
-initial conditions of a system of N bodies from a file and then simulating the dynamics
-of that system. It should be able to do so in real time (later on also export to video).
+## Unity 
+Contains the Unity implementation of the project. 
 
-The general idea (which is also roughly implemented in _Unity_ folder):
-* Create a new project in Unity
-* Add an `Empty Object` to the scene. Attach a script to this object that does the following:
-    * Read initial conditions (_position_, _velocity_, _mass_) from input file and instantiate a new primitive Sphere object for each body
-    * Remove `SphereCollision` component from the created Sphere
-    * Modify the `MeshRenderer` component settings of the Sphere for better performance
-    * On every step, calculates the _gravitational force_ caused by other Spheres for each Sphere using _Newton's equations_.
-    * After all forces are calculated, for each Sphere determine the _acceleration_ and, it to the Sphere's _velocity_ and modify its _position_
+# Running the project
 
-## 2. Intelligent Generator of Initial Conditions
+## Python
+1. Head into the Python directory
+`cd Python`
+2. Install the requirements with pip
+`pip install -r requirements.txt`
+3. Run the python implementation
+`python n_body_problem.py`
+4. Once opened, you first need to select the .csv data to use in the pop-up.
+5. When the simulation is running, you can use the
+* mouse wheel, to zoom in and out
+* mouse drag, to drag around the scene
+* WASD keys to move around
+* QE keys to rotate the view
 
-After we have a working prototype, we can start working on an **Initial Conditions Generator**.
-The generator should be able to at least do the following:
-* Generating a [galaxy](https://en.wikipedia.org/wiki/Galaxy), where stars initially orbit some center point
-* Generating two galaxies that pass each other
-* Generating two galaxies that collide
+## Unity
+1. Head into the Unity/Build directory
+`cd Unity/Build`
+2. Select the system you're running (if you're using MacOS, you should head into Linux directory)
+3. If you're on Linux, change the permissions of the _NBody.x86\_64_ file to executable
+`chmod +x NBody.x86_64`
+4. If on Windows, run the _NBody.exe_, else run the `./NBody.x86_64`
+5. Once opened, press the _Start Simulation_ and then select the .csv file you wish to read (these files are located in the _unity/Build/{system}/Data_ directory)
 
-More ideas of scenarios that we could (possibly) generate:
-* Generating M galaxies that revolve around a center point
-* Generating 3 galaxies that travel around a [Figure-8 Shape](https://www.youtube.com/watch?v=b0nlqX3j_bo) (if that is even possible)
-* Adding very light super fast bodies to the system
+## Additional notes
+* For running the _Export to video_ option, _ffmpeg_ has to be installed on the system and added to PATH.
+* We recommend running in the GPU mode, but the .csv files used **must contain** multiple of a 100 bodies
+* We also ecommend using colissions on a smaller set of bodies
+* It is also recommended to start small with data samples and then gradually select files with larger number of bodies. 
+PCs were restarted many times when building this project due to forgetting this point specifically. :)
 
-## 3. Export Unity Scene to Video
 
-In addition to _Real-Time_ simulation, the Unity implementation should also support a mode
-that allows the Scene to be rendered longer and then exported to a video, which would allow
-us to create scenes with many more bodies.
-
-To do so, we will also need to figure out how to position the Unity camera well before running
-the program, so that the output video will look _decent_ :)
-
-## 4. Improve Performance
-
-The performance can (and should) be improved on two sides: A and B described below.
-
-### A) **Rendering** in Unity
-Find a way to render many objects faster in Unity.
-
-### B) **Calculation** of Forces
-* Try using the [Runge-Kutta mathod](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods) instead of [Euler's method](https://en.wikipedia.org/wiki/Euler_method)
-* Number of calculations can be halved by calculating the force for a pair of bodies only once
-* Pray to god and then research if Unity already offers an API to run calculations on the GPU
-
-## 5. Extra Candy
-
-These are some extra features to _pimp out_ our project. It is probably best to save these for the end,
-if there is any time left.
-
-* Add colors to bodies based on their _velocity_ and change their _radius_ accoridng to their mass
-* Implement a system for detecting and handling collisions. We could make it so that when two bodies collide,
-  they are merged into one with _mass_ equal to sum of masses of merged bodies. The _velocity_ of the merged
-  body can be calculated by using the _Law of Momenutm Conservation_
-* Hire Morgan Freeman to narrate the exported video
