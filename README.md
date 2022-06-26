@@ -17,6 +17,10 @@ Contains the Python implementation of the project. It contains two python script
 - `n_body_problem.py` performs the main simulation of the system.
 - `transform.py` scirpt includes a class for applying transformations to the scene (e.g for moving around the scene).
 
+## Julia
+Contains the Julia script "galaxy.jl" that takes the initial matrix of masses, initial positions, and initial velocities, and performs the simulation.
+It also contains a few csv files that serve as input.
+
 ## Unity/NBody
 Contains the Unity implementation of the project. All of our code is located in the `Assets` folder, which conatains two important subfolders:
 - `Scripts` folder contains all of scripts we wrote for Unity implementation. It is (again) divided into two subfolders. The most relevant scripts
@@ -38,6 +42,11 @@ Contains the Unity implementation of the project. All of our code is located in 
     * mouse wheel, to zoom in and out
     * mouse drag, to drag around the scene
     * W and S, A and D, Q and E pairs of keys to rotate around the scene
+
+## Julia
+1. Open julia and use cd("wholePath") to get to the directory that contains galaxy.jl
+2. Use:   using DelimitedFiles     and then  M = readdlm("testName.csv") to store it into M.
+3. Use galaxy(G, dt, numOfSteps, M)   -  this will create the output file "izpis.txt" of positions and velocities at each step.
 
 ## Unity
 1. Head into the Unity/Build directory
