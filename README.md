@@ -45,7 +45,7 @@ Contains the Unity implementation of the project.
 ## Additional notes
 * For running the _Export to video_ option, _ffmpeg_ has to be installed on the system and added to PATH.
 * We recommend running in the GPU mode, but the .csv files used **must contain** multiple of a 100 bodies
-* We also ecommend using colissions on a smaller set of bodies
+* We also recommend using colissions on a smaller set of bodies
 * It is also recommended to start small with data samples and then gradually select files with larger number of bodies. 
 PCs were restarted many times when building this project due to forgetting this point specifically. :)
 
