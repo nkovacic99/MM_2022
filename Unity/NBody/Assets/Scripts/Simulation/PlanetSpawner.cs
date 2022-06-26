@@ -6,32 +6,11 @@ using System.Globalization;
 
 public class PlanetSpawner
 {
-    private int bodyResolution = 2;
+    private const int bodyResolution = 2;
     private const int numberOfCsvColumns = 7;
 
     private Mesh bodyMesh;
     private Material bodyMaterial;
-
-    private GameObject tmp;
-
-    public void SpawnSphere(int resolution)
-    {
-        bodyResolution = resolution;
-        GenerateMesh();
-        GameObject body = new GameObject("Planet");
-        body.AddComponent<MeshFilter>().sharedMesh = bodyMesh;
-        MeshRenderer meshRenderer = body.AddComponent<MeshRenderer>();
-        meshRenderer.sharedMaterial = bodyMaterial;
-        body.transform.position = new Vector3(0, 0, 0);
-        tmp = body;
-    }
-
-    public void ChangeRes(int resolution)
-    {
-        bodyResolution = resolution;
-        GenerateMesh();
-        tmp.GetComponent<MeshFilter>().sharedMesh = bodyMesh;
-    }
 
     public PlanetSpawner()
     {
