@@ -17,7 +17,7 @@ def plot_all():
     plt.legend()
     plt.xlabel('Number of bodies')
     plt.ylabel('Time for 1 iteration [s]')
-    plt.title('Comparison of force computation time and body rendering')
+    plt.title('Comparison of force computation time')
     plt.show()
     
 def plot_unity():
@@ -34,7 +34,7 @@ def plot_unity():
     plt.legend()
     plt.xlabel('Number of bodies')
     plt.ylabel('Time for 1 iteration [s]')
-    plt.title('Comparison of force computation time and body rendering (Unity implementations only)')
+    plt.title('Comparison of force computation time (Unity implementations only)')
     plt.show()
 
 if __name__ == '__main__':
