@@ -1,6 +1,8 @@
 # Introduction
 
 Due to the project being quite large, we include this simple README file to make it easier to navigate for others.
+We also prepared videos of most interesting simulations but they are not included here due to size limitations. They
+can be accesed on [this link](https://drive.google.com/drive/folders/1yZIPItSGfS9MuLOkpL-V91gM682eIf22?usp=sharing).
 
 # Structure of the project
 Project is structured in folders:
@@ -8,9 +10,6 @@ Project is structured in folders:
 ## Time Analysis
 Time Analysis folder contains analysis of the times required for a single iteration at different numbers of bodies for different implementations.
 A python script `plot.py` for plotting said analysis is also included in the folder.
-
-## Presentation 
-Contains the videos of the main (and more impressive) simulations. We recommend having a look at them, because they truly are beautiful.
 
 ## Python 
 Contains the Python implementation of the project. It contains two python scripts:
@@ -49,13 +48,13 @@ Contains the Unity implementation of the project. All of our code is located in 
 3. Use galaxy(G, dt, numOfSteps, M)   -  this will create the output file "izpis.txt" of positions and velocities at each step.
 
 ## Unity
-1. Head into the Unity/Build directory
-`cd Unity/Build`
+1. Download the built application from [this link](https://drive.google.com/drive/folders/10OI0xXAUqyYhxldfqhmxoA-yq4SfGFe4?usp=sharing)
 2. Select the system you're running (if you're using MacOS, you should head into Linux directory)
 3. If you're on Linux, change the permissions of the _NBody.x86\_64_ file to executable
 `chmod +x NBody.x86_64`
 4. If on Windows, run the _NBody.exe_, else run the `./NBody.x86_64`
 5. Once opened, press the _Start Simulation_ and then select the .csv file you wish to read (these files are located in the _unity/Build/{system}/Data_ directory)
+6. You can navigate around the scene using the mouse and WASD buttons.
 
 ## Additional notes
 * For running the _Export to video_ option, _ffmpeg_ has to be installed on the system and added to PATH.
